@@ -5,7 +5,6 @@ import (
 	"github.com/XDwanj/go-gsgm/dao"
 	"github.com/XDwanj/go-gsgm/logger"
 	"github.com/XDwanj/go-gsgm/lutris_dao"
-	"github.com/jmoiron/sqlx"
 )
 
 func UpsertLutrisDb(
@@ -25,8 +24,8 @@ func UpsertLutrisDb(
 	)
 
 	// game
-	// var gameByDb *lutris_dao.LutrisGame
-	err = tx.Get(&gameId, `select * from games where slug = ?`, game.Slug)
+	err = tx.Get(&gameId, `--sql
+	select * from games where slug = ?`, game.Slug)
 	if err != nil {
 		res, err := tx.NamedExec(`--sql
 		insert into games (
@@ -42,9 +41,11 @@ func UpsertLutrisDb(
 	}
 
 	// categories
-	err = tx.Get(&categoryId, `select id from categories where name = ?`, category.Name)
+	err = tx.Get(&categoryId, `--sql
+	select id from categories where name = ?`, category.Name)
 	if err != nil {
-		res, err := tx.Exec(`insert into categories (name) values (?)`, category.Name)
+		res, err := tx.Exec(`--sql
+		insert into categories (name) values (?)`, category.Name)
 		if err != nil {
 			logger.Erro(err)
 			return err
@@ -52,7 +53,8 @@ func UpsertLutrisDb(
 		categoryId, _ = res.LastInsertId()
 	}
 
-	_, err = tx.Exec(`insert into games_categories (game_id, category_id) values (?, ?)`, gameId, categoryId)
+	_, err = tx.Exec(`--sql
+	insert into games_categories (game_id, category_id) values (?, ?)`, gameId, categoryId)
 	if err != nil {
 		logger.Erro(err)
 		return err
@@ -128,50 +130,23 @@ func CleanLutrisDb() error {
 	}
 	defer tx.Rollback()
 
-	ids := make([]int64, 0)
-	if err := tx.Select(&ids, `select id from games where slug like ?`, config.SlugPrefix+"%"); err != nil {
+	// rel
+	if _, err := tx.Exec(`--sql
+	delete from games_categories where game_id in (select id from games where slug like ?)`, config.SlugPrefix+"%"); err != nil {
 		logger.Erro(err)
 		return err
-	}
-	if len(ids) == 0 {
-		return nil
 	}
 
 	// games
-	delSql, args, err := sqlx.In(`--sql
-	delete from games where id in (?)`, ids)
-	if err != nil {
-		logger.Erro(err)
-		return err
-	}
-
-	_, err = tx.Exec(delSql, args...)
-	if err != nil {
-		logger.Erro(err)
-		return err
-	}
-
-	// games_categories
-	delSql, args, err = sqlx.In(`--sql
-	delete from games_categories where game_id in (?)`, ids)
-	if err != nil {
-		logger.Erro(err)
-		return err
-	}
-
-	_, err = tx.Exec(delSql, args...)
-	if err != nil {
+	if _, err := tx.Exec(`--sql
+	delete from games where slug like ?`, config.SlugPrefix+"%"); err != nil {
 		logger.Erro(err)
 		return err
 	}
 
 	// categories
-	_, err = tx.Exec(`--sql
-	delete from categories where name like ? or name like ?`, "$%", "@%")
-	if err != nil {
-		logger.Erro(err)
-		return err
-	}
+	tx.Exec(`--sql
+	delete from categories where name like ? or name like ?`, "@%", "$%")
 
 	// tx.commit
 	return tx.Commit()

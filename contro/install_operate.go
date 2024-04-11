@@ -41,10 +41,11 @@ func InstallBySingles(paths []string, force bool, safeMode bool) {
 	var waitGroup sync.WaitGroup
 	waitGroup.Add(len(paths))
 	for _, path := range paths {
-		go func(path string, force bool) {
+		path, force := path, force
+		go func() {
 			defer waitGroup.Done()
 			InstallByOne(path, force, config.DefaultGroupName, safeMode)
-		}(path, force)
+		}()
 	}
 	waitGroup.Wait()
 }
