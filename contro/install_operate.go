@@ -81,8 +81,11 @@ func InstallByOne(path string, force bool, packName string, safeMode bool) {
 	}
 
 	// db
-	// TODO: upsert 和 install 未分离
-	err = lutris_service.UpsertLutrisDb(lutrisGame, lutrisCategory)
+	if force {
+		err = lutris_service.InstallLutrisDb(lutrisGame, lutrisCategory)
+	} else {
+		err = lutris_service.UpsertLutrisDb(lutrisGame, lutrisCategory)
+	}
 	if err != nil {
 		logger.Erro(err)
 	}
@@ -104,13 +107,13 @@ func InstallByOne(path string, force bool, packName string, safeMode bool) {
 	if safeMode || err != nil {
 		funcLen = 0
 	}
-	var imgGroup sync.WaitGroup
-	imgGroup.Add(funcLen)
+	var wg sync.WaitGroup
+	wg.Add(funcLen)
 	errArr := make([]error, funcLen)
 	for i := 0; i < funcLen; i++ {
 		i := i
 		go func() {
-			defer imgGroup.Done()
+			defer wg.Done()
 			if force {
 				errArr[i] = installFunc[i](info.Id, path)
 			} else {
@@ -118,7 +121,7 @@ func InstallByOne(path string, force bool, packName string, safeMode bool) {
 			}
 		}()
 	}
-	imgGroup.Wait()
+	wg.Wait()
 
 	for _, err := range errArr {
 		if err == nil {
