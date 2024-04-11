@@ -28,7 +28,8 @@ const (
 	GsgmHistoryName  = "history.json"
 	GsgmDirName      = ".gsgm"
 	GsgmCoverName    = "cover"
-	GsgmIsPackName   = ".is-group"
+	// GsgmIsPackName   = ".is-group"
+	GsgmIsPackPrefix = "@_"
 	DefaultGroupName = "$default"
 )
 

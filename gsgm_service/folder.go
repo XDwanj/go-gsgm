@@ -183,8 +183,9 @@ func walkGamePackFolder(folder string, block func(gamePackPath string)) {
 	if !isGameBranch(folder) {
 		return
 	}
-	isPackPath := filepath.Join(folder, config.GsgmIsPackName)
-	if fileutil.IsExist(isPackPath) {
+	// isPackPath := filepath.Join(folder, config.GsgmIsPackName)
+	// if fileutil.IsExist(isPackPath) {
+	if isGamePack(folder) {
 		block(folder)
 	} else {
 		dirs, err := os.ReadDir(folder)
@@ -199,6 +200,11 @@ func walkGamePackFolder(folder string, block func(gamePackPath string)) {
 			walkGamePackFolder(path, block)
 		}
 	}
+}
+
+func isGamePack(path string) bool {
+	name := filepath.Base(path)
+	return strings.HasPrefix(name, config.GsgmIsPackPrefix)
 }
 
 // 是否是忽略分支
