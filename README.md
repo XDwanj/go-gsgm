@@ -78,7 +78,7 @@ setting.json
 
 ```shell
 # 通过设置别名的方式使用
-alias gsgm='java -jar /xxxx/gsgm'
+alias gsgm='/path/to/go-gsgm'
 ```
 
 ```shell
