@@ -10,6 +10,7 @@ import (
 var initCmd = &cobra.Command{
 	Use:    "init",
 	Short:  "初始化单个游戏或者一整个 Gsgm 库",
+	Args:   cobra.MinimumNArgs(1),
 	PreRun: InitLog,
 	Run: func(cmd *cobra.Command, args []string) {
 		if initIsLibrary {

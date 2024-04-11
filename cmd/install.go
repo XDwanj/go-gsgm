@@ -9,6 +9,7 @@ import (
 var installCmd = &cobra.Command{
 	Use:    "install",
 	Short:  "安装游戏",
+	Args:   cobra.MinimumNArgs(1),
 	PreRun: InitLog,
 	Run: func(cmd *cobra.Command, args []string) {
 		if installIsLibrary {
