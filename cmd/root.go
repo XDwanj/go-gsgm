@@ -3,7 +3,7 @@ package cmd
 import (
 	"os"
 
-	gsgmLogger "github.com/XDwanj/go-gsgm/logger"
+	"github.com/XDwanj/go-gsgm/logger"
 	"github.com/spf13/cobra"
 )
 
@@ -15,9 +15,9 @@ var rootCmd = &cobra.Command{
 
 func InitLog(cmd *cobra.Command, args []string) {
 	if Verbose {
-		gsgmLogger.Level = gsgmLogger.Debug
+		logger.Level = logger.Debug
 	} else {
-		gsgmLogger.Level = gsgmLogger.NoLog
+		logger.Level = logger.Error
 	}
 }
 
