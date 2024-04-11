@@ -201,7 +201,7 @@ Usage:
 Flags:
   -f, --force   覆盖安装
   -h, --help    help for install
-  -l, --lib     是否是 Gsgm 游戏库 (default true)
+  -l, --lib     是否是 Gsgm 游戏库
   -s, --safe    安装，但不添加图片
 
 Global Flags:

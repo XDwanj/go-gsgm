@@ -52,11 +52,7 @@ func UpsertLutrisDb(
 		categoryId, _ = res.LastInsertId()
 	}
 
-	_, err = tx.Exec(`insert into games_categories (
-		game_id, category_id
-	) values (
-		?, ?
-	)`, gameId, categoryId)
+	_, err = tx.Exec(`insert into games_categories (game_id, category_id) values (?, ?)`, gameId, categoryId)
 	if err != nil {
 		logger.Erro(err)
 		return err

@@ -28,6 +28,6 @@ var (
 func init() {
 	defer rootCmd.AddCommand(installCmd)
 	installCmd.Flags().BoolVarP(&installForce, "force", "f", false, "覆盖安装")
-	installCmd.Flags().BoolVarP(&installIsLibrary, "lib", "l", true, "是否是 Gsgm 游戏库")
+	installCmd.Flags().BoolVarP(&installIsLibrary, "lib", "l", false, "是否是 Gsgm 游戏库")
 	installCmd.Flags().BoolVarP(&installSafeMode, "safe", "s", false, "安装，但不添加图片")
 }
