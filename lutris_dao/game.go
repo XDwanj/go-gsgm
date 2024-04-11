@@ -4,33 +4,59 @@ import (
 	"time"
 )
 
-type LutrisGame struct {
-	Id                   int64      `gorm:"column:id;type:INTEGER;primaryKey;" json:"id"`
-	Name                 string     `gorm:"column:name;type:TEXT;" json:"name"`
-	Sortname             string     `gorm:"column:sortname;type:TEXT;" json:"sortname"`
-	Slug                 string     `gorm:"column:slug;type:TEXT;" json:"slug"`
-	InstallerSlug        string     `gorm:"column:installer_slug;type:TEXT;" json:"installer_slug"`
-	ParentSlug           string     `gorm:"column:parent_slug;type:TEXT;" json:"parent_slug"`
-	Platform             string     `gorm:"column:platform;type:TEXT;" json:"platform"`
-	Runner               string     `gorm:"column:runner;type:TEXT;" json:"runner"`
-	Executable           string     `gorm:"column:executable;type:TEXT;" json:"executable"`
-	Directory            string     `gorm:"column:directory;type:TEXT;" json:"directory"`
-	Updated              *time.Time `gorm:"column:updated;type:DATETIME;" json:"updated"`
-	Lastplayed           int64      `gorm:"column:lastplayed;type:INTEGER;" json:"lastplayed"`
-	Installed            int        `gorm:"column:installed;type:INTEGER;" json:"installed"`
-	InstalledAt          int64      `gorm:"column:installed_at;type:INTEGER;" json:"installed_at"`
-	Year                 int        `gorm:"column:year;type:INTEGER;" json:"year"`
-	Configpath           string     `gorm:"column:configpath;type:TEXT;" json:"configpath"`
-	HasCustomBanner      int        `gorm:"column:has_custom_banner;type:INTEGER;" json:"has_custom_banner"`
-	HasCustomIcon        int        `gorm:"column:has_custom_icon;type:INTEGER;" json:"has_custom_icon"`
-	HasCustomCoverartBig int        `gorm:"column:has_custom_coverart_big;type:INTEGER;" json:"has_custom_coverart_big"`
-	Playtime             float64    `gorm:"column:playtime;type:REAL;" json:"playtime"`
-	Hidden               int        `gorm:"column:hidden;type:INTEGER;" json:"hidden"`
-	Service              string     `gorm:"column:service;type:TEXT;" json:"service"`
-	ServiceId            string     `gorm:"column:service_id;type:TEXT;" json:"service_id"`
-	DiscordId            string     `gorm:"column:discord_id;type:TEXT;" json:"discord_id"`
-}
+/*
+CREATE TABLE games (
 
-func (l *LutrisGame) TableName() string {
-	return "games"
+	id INTEGER PRIMARY KEY,
+	name TEXT,
+	sortname TEXT,
+	slug TEXT,
+	installer_slug TEXT,
+	parent_slug TEXT,
+	platform TEXT,
+	runner TEXT,
+	executable TEXT,
+	directory TEXT,
+	updated DATETIME,
+	lastplayed INTEGER,
+	installed INTEGER,
+	installed_at INTEGER,
+	year INTEGER,
+	configpath TEXT,
+	has_custom_banner INTEGER,
+	has_custom_icon INTEGER,
+	has_custom_coverart_big INTEGER,
+	playtime REAL,
+	hidden INTEGER,
+	service TEXT,
+	service_id TEXT,
+	discord_id TEXT
+
+)
+*/
+type LutrisGame struct {
+	Id                   int64      `json:"id"`
+	Name                 string     `json:"name"`
+	Sortname             string     `json:"sortname"`
+	Slug                 string     `json:"slug"`
+	InstallerSlug        string     `json:"installer_slug"`
+	ParentSlug           string     `json:"parent_slug"`
+	Platform             string     `json:"platform"`
+	Runner               string     `json:"runner"`
+	Executable           string     `json:"executable"`
+	Directory            string     `json:"directory"`
+	Updated              *time.Time `json:"updated"`
+	Lastplayed           int64      `json:"lastplayed"`
+	Installed            int        `json:"installed"`
+	InstalledAt          int64      `json:"installed_at"`
+	Year                 int        `json:"year"`
+	Configpath           string     `json:"configpath"`
+	HasCustomBanner      int        `json:"has_custom_banner"`
+	HasCustomIcon        int        `json:"has_custom_icon"`
+	HasCustomCoverartBig int        `json:"has_custom_coverart_big"`
+	Playtime             float64    `json:"playtime"`
+	Hidden               int        `json:"hidden"`
+	Service              string     `json:"service"`
+	ServiceId            string     `json:"service_id"`
+	DiscordId            string     `json:"discord_id"`
 }

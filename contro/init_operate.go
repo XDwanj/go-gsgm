@@ -52,7 +52,8 @@ func InitByOne(path string) {
 
 	files := deepTwo(path)
 	platformId := 1
-	print("游戏平台[Windows=1, Linux=2]，默认为 1 >> ")
+	fmt.Println("游戏平台[Windows=1, Linux=2]，默认为 1")
+	fmt.Print(">> ")
 	fmt.Scanln(&platformId)
 
 	platform := gsgm_setting.Windows
@@ -67,14 +68,16 @@ func InitByOne(path string) {
 		fmt.Print(text.FgMagenta.Sprint(i) + " " + file[len(path)+1:] + "\n")
 	}
 	idx := 0
-	fmt.Print("选择可执行文件，回车默认为 0 >> ")
+	fmt.Println("选择可执行文件，回车默认为 0")
+	fmt.Print(">>")
 	fmt.Scanln(&idx)
 
 	exe := files[idx][len(path)+1:]
 
 	prefixFlag := 0
 	if platform == gsgm_setting.Windows {
-		fmt.Print("WINE_PREFIX 隔离[是=1, 否=0]，回车默认为 0 >> ")
+		fmt.Println("WINE_PREFIX 隔离[是=1, 否=0]，回车默认为 0")
+		fmt.Print(">>")
 		fmt.Scanln(&prefixFlag)
 	}
 	prefixAlone := (prefixFlag == 1)
@@ -112,7 +115,7 @@ func InitByOne(path string) {
 	}()
 	waitGroup.Wait()
 
-	fmt.Println("该游戏的初始化已结束，请忘了在 {game}/.gsgm/ 路径下放一个 cover.[jpg,jpeg,png] 文件")
+	fmt.Println("该游戏的初始化已结束，请别忘了在 {game}/.gsgm/ 路径下放一个 cover.[jpg,jpeg,png] 文件")
 }
 
 func DeleteRule(path string, platform gsgm_setting.Platform) bool {

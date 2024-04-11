@@ -1,10 +1,14 @@
 package lutris_dao
 
-type LutrisCategory struct {
-	Id          int64        `gorm:"column:id;type:INTEGER;primaryKey;" json:"id"`
-	Name        string       `gorm:"column:name;type:TEXT;" json:"name"`
-}
+/*
+CREATE TABLE categories (
 
-func (l *LutrisCategory) TableName() string {
-	return "categories"
+	id INTEGER PRIMARY KEY,
+	name TEXT UNIQUE
+
+)
+*/
+type LutrisCategory struct {
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
 }

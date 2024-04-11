@@ -1,29 +1,33 @@
 package dao
 
 import (
-	"github.com/XDwanj/go-gsgm/config"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
+	"database/sql"
+	"strings"
 
-	// "gorm.io/driver/sqlite" // Sqlite driver based on CGO
-	"github.com/glebarez/sqlite" // Pure go SQLite driver, checkout https://github.com/glebarez/sqlite for details
+	"github.com/XDwanj/go-gsgm/config"
+	"github.com/XDwanj/go-gsgm/logger"
+	"github.com/jmoiron/sqlx"
+	"github.com/jmoiron/sqlx/reflectx"
+	"github.com/mattn/go-sqlite3"
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/qustavo/sqlhooks/v2"
 )
 
-var LutrisDb *gorm.DB
+var LuDb *sqlx.DB
 
 func init() {
-	// github.com/mattn/go-sqlite3
-	db, err := gorm.Open(
-		sqlite.Open(config.PgaDbPath),
-		&gorm.Config{
-			Logger: logger.Default.LogMode(logger.Silent),
-		},
-	)
+	// wrap
+	sql.Register("sqlite3_with_hooks", sqlhooks.Wrap(&sqlite3.SQLiteDriver{}, &Hooks{}))
+
+	db, err := sqlx.Connect("sqlite3_with_hooks", config.PgaDbPath)
 	if err != nil {
-		panic("lutris 数据库未初始化")
+		logger.Erro(err)
 	}
-	sqlDb, _ := db.DB()
-	sqlDb.SetMaxOpenConns(1)
-	sqlDb.SetMaxIdleConns(1)
-	LutrisDb = db
+
+	db.SetMaxOpenConns(1)
+	db.SetMaxIdleConns(1)
+
+	db.Mapper = reflectx.NewMapperFunc("json", strings.ToLower)
+
+	LuDb = db
 }

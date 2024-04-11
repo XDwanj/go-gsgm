@@ -1,81 +1,125 @@
 package lutris_service
 
 import (
-	"encoding/json"
-
 	"github.com/XDwanj/go-gsgm/config"
 	"github.com/XDwanj/go-gsgm/dao"
 	"github.com/XDwanj/go-gsgm/logger"
 	"github.com/XDwanj/go-gsgm/lutris_dao"
-	"gorm.io/gorm"
+	"github.com/jmoiron/sqlx"
 )
 
 func UpsertLutrisDb(
 	game *lutris_dao.LutrisGame,
 	category *lutris_dao.LutrisCategory,
 ) error {
-
-	dao.LutrisDb.Session(&gorm.Session{SkipDefaultTransaction: true})
-	return dao.LutrisDb.Transaction(func(tx *gorm.DB) error {
-		err := tx.FirstOrCreate(game, lutris_dao.LutrisGame{Slug: game.Slug}).Error
-		if err != nil {
-			return err
-		}
-		err = tx.FirstOrCreate(category, lutris_dao.LutrisCategory{Name: category.Name}).Error
-		if err != nil {
-			return err
-		}
-
-		lutrisGameId := game.Id
-		lutrisCategoryId := category.Id
-
-		rel := &lutris_dao.LutrisRelGameToCategory{
-			GameId:     lutrisGameId,
-			CategoryId: lutrisCategoryId,
-		}
-
-		err = tx.Create(rel).Error
-		if err != nil {
-			return err
-		}
-
-		return nil
-	})
-}
-
-func CleanLutrisDb() error {
-	var games []lutris_dao.LutrisGame
-	if err := dao.LutrisDb.Model(&lutris_dao.LutrisGame{}).Select("id").Where("slug like ?", config.SlugPrefix+"%").Find(&games).Error; err != nil {
-		return err
-	}
-	ids := make([]int64, len(games))
-	for i := range games {
-		ids[i] = games[i].Id
-	}
-
-	err := dao.LutrisDb.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Where("slug like ?", config.SlugPrefix+"%").Delete(&lutris_dao.LutrisGame{}).Error; err != nil {
-			return err
-		}
-		if err := tx.Where("name like ?", "@%").Or("name like ?", "$%").Delete(&lutris_dao.LutrisCategory{}).Error; err != nil {
-			return err
-		}
-		if err := tx.Where("game_id in ?", ids).Delete(&lutris_dao.LutrisRelGameToCategory{}).Error; err != nil {
-			return err
-		}
-		return nil
-	})
+	// tx.begin
+	tx, err := dao.LuDb.Beginx()
 	if err != nil {
 		return err
 	}
-	for i := range games {
-		bytes, _ := json.Marshal(games[i])
-		json := string(bytes)
-		if len(json) > 50 {
-			json = json[:50] + "..."
+	defer tx.Rollback()
+
+	var (
+		gameId     int64
+		categoryId int64
+	)
+
+	// game
+	// var gameByDb *lutris_dao.LutrisGame
+	err = tx.Get(&gameId, `select * from games where slug = ?`, game.Slug)
+	if err != nil {
+		res, err := tx.NamedExec(`--sql
+		insert into games (
+			name, slug, platform, runner, directory, installed, installed_at, updated, configpath, has_custom_banner, has_custom_icon, has_custom_coverart_big, hidden
+		) values (
+			:name, :slug, :platform, :runner, :directory, :installed, :installed_at, :updated, :configpath, :has_custom_banner, :has_custom_icon, :has_custom_coverart_big, :hidden
+		)`, game)
+		if err != nil {
+			logger.Erro(err)
+			return err
 		}
-		logger.Info("rm db ", json)
+		gameId, _ = res.LastInsertId()
 	}
 
-	return nil
+	// categories
+	err = tx.Get(&categoryId, `select id from categories where name = ?`, category.Name)
+	if err != nil {
+		res, err := tx.Exec(`insert into categories (name) values (?)`, category.Name)
+		if err != nil {
+			logger.Erro(err)
+			return err
+		}
+		categoryId, _ = res.LastInsertId()
+	}
+
+	_, err = tx.Exec(`insert into games_categories (
+		game_id, category_id
+	) values (
+		?, ?
+	)`, gameId, categoryId)
+	if err != nil {
+		logger.Erro(err)
+		return err
+	}
+
+	// tx.commit
+	return tx.Commit()
+}
+
+func CleanLutrisDb() error {
+	// tx
+	tx, err := dao.LuDb.Beginx()
+	if err != nil {
+		logger.Erro(err)
+		return err
+	}
+	defer tx.Rollback()
+
+	ids := make([]int64, 0)
+	if err := tx.Select(&ids, `select id from games where slug like ?`, config.SlugPrefix+"%"); err != nil {
+		logger.Erro(err)
+		return err
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+
+	// games
+	delSql, args, err := sqlx.In(`--sql
+	delete from games where id in (?)`, ids)
+	if err != nil {
+		logger.Erro(err)
+		return err
+	}
+
+	_, err = tx.Exec(delSql, args...)
+	if err != nil {
+		logger.Erro(err)
+		return err
+	}
+
+	// games_categories
+	delSql, args, err = sqlx.In(`--sql
+	delete from games_categories where game_id in (?)`, ids)
+	if err != nil {
+		logger.Erro(err)
+		return err
+	}
+
+	_, err = tx.Exec(delSql, args...)
+	if err != nil {
+		logger.Erro(err)
+		return err
+	}
+
+	// categories
+	_, err = tx.Exec(`--sql
+	delete from categories where name like ? or name like ?`, "$%", "@%")
+	if err != nil {
+		logger.Erro(err)
+		return err
+	}
+
+	// tx.commit
+	return tx.Commit()
 }
