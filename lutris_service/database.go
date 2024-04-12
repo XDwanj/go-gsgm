@@ -7,10 +7,7 @@ import (
 	"github.com/XDwanj/go-gsgm/lutris_dao"
 )
 
-func UpsertLutrisDb(
-	game *lutris_dao.LutrisGame,
-	category *lutris_dao.LutrisCategory,
-) error {
+func UpsertLutrisDb(game *lutris_dao.LutrisGame, category *lutris_dao.LutrisCategory) error {
 	// tx.begin
 	tx, err := dao.LuDb.Beginx()
 	if err != nil {
@@ -25,7 +22,7 @@ func UpsertLutrisDb(
 
 	// game
 	err = tx.Get(&gameId, `--sql
-	select * from games where slug = ?`, game.Slug)
+	select id from games where slug = ?`, game.Slug)
 	if err != nil {
 		res, err := tx.NamedExec(`--sql
 		insert into games (
@@ -53,6 +50,7 @@ func UpsertLutrisDb(
 		categoryId, _ = res.LastInsertId()
 	}
 
+	// rel
 	_, err = tx.Exec(`--sql
 	insert into games_categories (game_id, category_id) values (?, ?)`, gameId, categoryId)
 	if err != nil {
@@ -84,9 +82,9 @@ func InstallLutrisDb(
 	tx.Exec(`--sql
 	delete from games_categories where game_id in (select id from games where slug = ?)`, game.Slug)
 	tx.Exec(`--sql
-	delete from categories where id in (select id from categories where name = ?)`, category.Name)
+	delete from categories where name = ?`, category.Name)
 	tx.Exec(`--sql
-	delete from games where id in (select id from games where slug = ?)`, game.Slug)
+	delete from games where slug = ?`, game.Slug)
 
 	// game
 	res, err := tx.NamedExec(`--sql
@@ -122,7 +120,7 @@ func InstallLutrisDb(
 }
 
 func CleanLutrisDb() error {
-	// tx
+	// tx.begin
 	tx, err := dao.LuDb.Beginx()
 	if err != nil {
 		logger.Erro(err)
@@ -145,8 +143,11 @@ func CleanLutrisDb() error {
 	}
 
 	// categories
-	tx.Exec(`--sql
-	delete from categories where name like ? or name like ?`, "@%", "$%")
+	if _, err := tx.Exec(`--sql
+	delete from categories where name like ? or name like ?`, "@%", "$%"); err != nil {
+		logger.Erro(err)
+		return err
+	}
 
 	// tx.commit
 	return tx.Commit()

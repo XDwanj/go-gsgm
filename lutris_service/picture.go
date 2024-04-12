@@ -67,7 +67,7 @@ func UpsertGameIcon(gsgmId int64, gamePath string) error {
 	if fileutil.IsExist(destPath) {
 		return nil
 	}
-	logger.Debu("try upsert icon ", destPath)
+	logger.Info("try upsert icon ", destPath)
 	return InstallGameIcon(gsgmId, gamePath)
 }
 
