@@ -23,5 +23,5 @@ var checkIsLibrary bool
 
 func init() {
 	defer rootCmd.AddCommand(checkCmd)
-	checkCmd.Flags().BoolVarP(&checkIsLibrary, "is-library", "l", false, "是否是游戏库")
+	checkCmd.Flags().BoolVarP(&checkIsLibrary, "lib", "l", false, "是否是游戏库")
 }

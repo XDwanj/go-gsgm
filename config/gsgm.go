@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/XDwanj/go-gsgm/logger"
 	"github.com/mitchellh/go-homedir"
@@ -10,16 +11,16 @@ import (
 var home, _ = homedir.Dir()
 
 var (
-	gsgmLocalPath  = home + "/.local/share/gsgm"
-	gsgmConfigPath = home + "/.gsgmConfig/gsgm"
-	gsgmCachePath  = home + "/.cache/gsgm"
+	gsgmLocalPath  = filepath.Join(home, ".local", "share", "gsgm")
+	gsgmConfigPath = filepath.Join(home, ".config", "gsgm")
+	gsgmCachePath  = filepath.Join(home, ".cache", "gsgm")
 )
 
 var (
-	GsgmTmpPath           = gsgmCachePath + "/tmp"
-	GsgmDbPath            = gsgmLocalPath + "/gsgm.db"
-	GsgmPrefixPath        = gsgmLocalPath + "/prefix"
-	GsgmDefaultPrefixPath = gsgmLocalPath + "/prefix/0"
+	GsgmTmpPath           = filepath.Join(gsgmCachePath, "tmp")
+	GsgmDbPath            = filepath.Join(gsgmLocalPath, "gsgm.db")
+	GsgmPrefixPath        = filepath.Join(gsgmLocalPath, "prefix")
+	GsgmDefaultPrefixPath = filepath.Join(gsgmLocalPath, "prefix", "0")
 )
 
 const (
@@ -28,7 +29,6 @@ const (
 	GsgmHistoryName  = "history.json"
 	GsgmDirName      = ".gsgm"
 	GsgmCoverName    = "cover"
-	// GsgmIsPackName   = ".is-group"
 	GsgmIsPackPrefix = "@_"
 	DefaultGroupName = "$default"
 )
