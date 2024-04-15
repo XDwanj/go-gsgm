@@ -5,7 +5,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// syncCmd represents the sync command
 var syncCmd = &cobra.Command{
 	Use:    "sync",
 	Short:  "同步游戏时长",

@@ -1,19 +1,23 @@
 package config
 
-import "github.com/XDwanj/go-gsgm/logger"
+import (
+	"path/filepath"
 
-var (
-	lutrisConfigPath = home + "/.config/lutris"
-	lutrisCachePath  = home + "/.cache/lutris"
-	lutrisLocalPath  = home + "/.local/share/lutris"
+	"github.com/XDwanj/go-gsgm/logger"
 )
 
 var (
-	PgaDbPath = lutrisLocalPath + "/pga.db"
-	RunScriptPath = lutrisConfigPath + "/games"
-	CoverartPath  = lutrisCachePath + "/coverart"
-	BannerPath    = lutrisCachePath + "/banners"
-	IconPath      = home + "/.local/share/icons/hicolor/128x128/apps"
+	lutrisConfigPath = filepath.Join(home, ".config", "lutris")
+	lutrisCachePath  = filepath.Join(home, ".cache", "lutris")
+	lutrisLocalPath  = filepath.Join(home, ".local", "share", "lutris")
+)
+
+var (
+	PgaDbPath     = filepath.Join(lutrisLocalPath, "pga.db")
+	RunScriptPath = filepath.Join(lutrisConfigPath, "games")
+	CoverartPath  = filepath.Join(lutrisCachePath, "coverart")
+	BannerPath    = filepath.Join(lutrisCachePath, "banners")
+	IconPath      = filepath.Join(home, ".local", "share", "icons", "hicolor", "128x128", "apps")
 )
 
 const (

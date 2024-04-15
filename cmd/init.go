@@ -26,5 +26,5 @@ var (
 
 func init() {
 	defer rootCmd.AddCommand(initCmd)
-	initCmd.Flags().BoolVarP(&initIsLibrary, "is-library", "l", false, "是否是 Gsgm 游戏库")
+	initCmd.Flags().BoolVarP(&initIsLibrary, "lib", "l", false, "是否是 Gsgm 游戏库")
 }
