@@ -14,6 +14,7 @@ var syncCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if syncIsLibrary {
 			contro.SyncByLibraries(args)
+			return
 		}
 		contro.SyncBySingles(args)
 	},

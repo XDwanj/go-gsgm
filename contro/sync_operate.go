@@ -54,7 +54,7 @@ func SyncBySingles(paths []string) {
 }
 
 func SyncByOne(path string) {
-	historyDic := GetGameMap()
+	historyDic := getGameMap()
 	name := filepath.Base(path)
 	historyByDb := historyDic[name]
 	if historyByDb == nil {
@@ -76,7 +76,7 @@ func SyncByOne(path string) {
 var _action sync.Once
 var _historyMap map[string]*gsgm_setting.GsgmHistory
 
-func GetGameMap() map[string]*gsgm_setting.GsgmHistory {
+func getGameMap() map[string]*gsgm_setting.GsgmHistory {
 	_action.Do(func() {
 		games, err := lutris_service.ListNameAndLastplayedAndPlaytime()
 		if err != nil {
