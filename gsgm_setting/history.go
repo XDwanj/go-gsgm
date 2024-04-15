@@ -1,9 +1,6 @@
 package gsgm_setting
 
-import "time"
-
-// deprecated: 暂时不支持游戏游玩记录
 type GsgmHistory struct {
-	LastGameMoment time.Time `json:"lastGameMoment,omitempty"`
-	GameTime       float64   `json:"gameTime,omitempty"`
+	LastPlayedTime int64 `json:"lastPlayedTime,omitempty"` // 上次游玩时刻，单位：秒
+	PlayedDuration int64 `json:"playedDuration,omitempty"` // 游玩时间，单位：分钟
 }

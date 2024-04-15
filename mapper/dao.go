@@ -1,6 +1,7 @@
 package mapper
 
 import (
+	"database/sql"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -10,7 +11,7 @@ import (
 	"github.com/XDwanj/go-gsgm/lutris_dao"
 )
 
-func GsgmToLutrisLutrisGameDao(path string, info *gsgm_setting.GsgmInfo, setting *gsgm_setting.GsgmSetting) *lutris_dao.LutrisGame {
+func GsgmToLutrisLutrisGameDao(path string, info *gsgm_setting.GsgmInfo, setting *gsgm_setting.GsgmSetting, history *gsgm_setting.GsgmHistory) *lutris_dao.LutrisGame {
 
 	name := filepath.Base(path)
 	slug := config.SlugPrefix + strconv.FormatInt(info.Id, 10)
@@ -29,21 +30,32 @@ func GsgmToLutrisLutrisGameDao(path string, info *gsgm_setting.GsgmInfo, setting
 		}
 	}
 
-	// TODO: 没有处理游戏游玩记录
+	// history
+	var (
+		lastplayed sql.NullInt64   = sql.NullInt64{Int64: 0, Valid: false}
+		playtime   sql.NullFloat64 = sql.NullFloat64{Float64: 0, Valid: false}
+	)
+	if history != nil {
+		lastplayed = sql.NullInt64{Int64: history.LastPlayedTime, Valid: true}
+		playtime = sql.NullFloat64{Float64: time.Duration(history.PlayedDuration).Hours(), Valid: true}
+	}
+
 	lutrisGame := &lutris_dao.LutrisGame{
-		Name:                 name,
-		Slug:                 slug,
-		Platform:             string(setting.Platform),
-		Runner:               string(runner),
-		Directory:            path,
-		Installed:            1,
-		InstalledAt:          installDate,
+		Name:                 sql.NullString{String: name, Valid: true},
+		Slug:                 sql.NullString{String: slug, Valid: true},
+		Platform:             sql.NullString{String: string(setting.Platform), Valid: true},
+		Runner:               sql.NullString{String: string(runner), Valid: true},
+		Directory:            sql.NullString{String: path, Valid: true},
+		Lastplayed:           lastplayed,
+		Playtime:             playtime,
+		Installed:            sql.NullInt32{Int32: 1, Valid: true},
+		InstalledAt:          sql.NullInt64{Int64: installDate, Valid: true},
 		Updated:              nil,
-		Configpath:           slug,
-		HasCustomBanner:      1,
-		HasCustomIcon:        1,
-		HasCustomCoverartBig: 1,
-		Hidden:               0,
+		Configpath:           sql.NullString{String: slug, Valid: true},
+		HasCustomBanner:      sql.NullInt32{Int32: 1, Valid: true},
+		HasCustomIcon:        sql.NullInt32{Int32: 1, Valid: true},
+		HasCustomCoverartBig: sql.NullInt32{Int32: 1, Valid: true},
+		Hidden:               sql.NullInt32{Int32: 0, Valid: true},
 	}
 
 	return lutrisGame

@@ -21,19 +21,19 @@ func InstallByLibraries(libPaths []string, force bool, safeMode bool) {
 	}
 
 	for _, pack := range packs {
-		var waitGroup sync.WaitGroup
-		waitGroup.Add(len(pack.Paths))
+		var wg sync.WaitGroup
+		wg.Add(len(pack.Paths))
 
 		packName := pack.PackName
 
 		for _, path := range pack.Paths {
-			path, force, packName := path, force, packName
+			path := path
 			go func() {
-				defer waitGroup.Done()
+				defer wg.Done()
 				InstallByOne(path, force, packName, safeMode)
 			}()
 		}
-		waitGroup.Wait()
+		wg.Wait()
 	}
 }
 
@@ -67,8 +67,13 @@ func InstallByOne(path string, force bool, packName string, safeMode bool) {
 	if err != nil {
 		logger.Erro(err)
 	}
+	history, err := gsgm_service.GetGsgmHistoryByPath(path)
+	if err != nil {
+		logger.Warn(err)
+	}
+
 	runScript := mapper.GsgmToLutrisRunScript(path, info, setting)
-	lutrisGame := mapper.GsgmToLutrisLutrisGameDao(path, info, setting)
+	lutrisGame := mapper.GsgmToLutrisLutrisGameDao(path, info, setting, history)
 	lutrisCategory := mapper.GsgmToLutrisLutrisCategoryDao(packName)
 
 	// script

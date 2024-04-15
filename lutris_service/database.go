@@ -26,9 +26,9 @@ func UpsertLutrisDb(game *lutris_dao.LutrisGame, category *lutris_dao.LutrisCate
 	if err != nil {
 		res, err := tx.NamedExec(`--sql
 		insert into games (
-			name, slug, platform, runner, directory, installed, installed_at, updated, configpath, has_custom_banner, has_custom_icon, has_custom_coverart_big, hidden
+			name, slug, platform, lastplayed, playtime, runner, directory, installed, installed_at, updated, configpath, has_custom_banner, has_custom_icon, has_custom_coverart_big, hidden
 		) values (
-			:name, :slug, :platform, :runner, :directory, :installed, :installed_at, :updated, :configpath, :has_custom_banner, :has_custom_icon, :has_custom_coverart_big, :hidden
+			:name, :slug, :platform, :lastplayed, :playtime, :runner, :directory, :installed, :installed_at, :updated, :configpath, :has_custom_banner, :has_custom_icon, :has_custom_coverart_big, :hidden
 		)`, game)
 		if err != nil {
 			logger.Erro(err)
@@ -62,10 +62,7 @@ func UpsertLutrisDb(game *lutris_dao.LutrisGame, category *lutris_dao.LutrisCate
 	return tx.Commit()
 }
 
-func InstallLutrisDb(
-	game *lutris_dao.LutrisGame,
-	category *lutris_dao.LutrisCategory,
-) error {
+func InstallLutrisDb(game *lutris_dao.LutrisGame, category *lutris_dao.LutrisCategory) error {
 	// tx.begin
 	tx, err := dao.LuDb.Beginx()
 	if err != nil {
@@ -89,9 +86,9 @@ func InstallLutrisDb(
 	// game
 	res, err := tx.NamedExec(`--sql
 	insert into games (
-		name, slug, platform, runner, directory, installed, installed_at, updated, configpath, has_custom_banner, has_custom_icon, has_custom_coverart_big, hidden
+		name, slug, platform, lastplayed, playtime, runner, directory, installed, installed_at, updated, configpath, has_custom_banner, has_custom_icon, has_custom_coverart_big, hidden
 	) values (
-		:name, :slug, :platform, :runner, :directory, :installed, :installed_at, :updated, :configpath, :has_custom_banner, :has_custom_icon, :has_custom_coverart_big, :hidden
+		:name, :slug, :platform, :lastplayed, :playtime,:runner, :directory, :installed, :installed_at, :updated, :configpath, :has_custom_banner, :has_custom_icon, :has_custom_coverart_big, :hidden
 	)`, game)
 	if err != nil {
 		logger.Erro(err)
@@ -151,4 +148,29 @@ func CleanLutrisDb() error {
 
 	// tx.commit
 	return tx.Commit()
+}
+
+func ListNameAndLastplayedAndPlaytime() ([]*lutris_dao.LutrisGame, error) {
+	db := dao.LuDb
+
+	games := make([]*lutris_dao.LutrisGame, 0)
+	err := db.Select(&games, `--sql
+	SELECT name,
+    playtime,
+    lastplayed
+	from games
+	where slug like ?
+		and (
+			playtime is not null
+			or lastplayed is not null
+		)
+		and (
+			abs(playtime - 0) > 0.01
+			or lastplayed > 0
+		)`, config.SlugPrefix+"%")
+	if err != nil {
+		return nil, err
+	}
+
+	return games, nil
 }

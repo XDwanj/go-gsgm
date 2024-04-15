@@ -128,6 +128,23 @@ func CheckSetting(path string) error {
 	return nil
 }
 
+// 检查该路径的游戏 history.json 合法
+func CheckHistory(path string) error {
+	historyPath := filepath.Join(path, config.GsgmDirName, config.GsgmHistoryName)
+	historyJson, err := fileutil.ReadFileToString(historyPath)
+	if err != nil {
+		logger.Warn(err)
+		return errors.New("history.json is not found")
+	}
+	history := &gsgm_setting.GsgmHistory{}
+	if err := json.Unmarshal([]byte(historyJson), history); err != nil {
+		logger.Warn(err, path)
+		return errors.New("history.json wrong format: " + err.Error())
+	}
+
+	return nil
+}
+
 // 检查该路径的游戏 cover.[png,jpg,jpeg] 合法
 func CheckImg(path string) error {
 	if _, err := GetImgPath(path); err != nil {

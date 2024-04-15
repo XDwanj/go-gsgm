@@ -42,3 +42,19 @@ func GetGsgmSettingByPath(path string) (*gsgm_setting.GsgmSetting, error) {
 
 	return setting, nil
 }
+
+// 接受游戏路径，返回 GsgmHistory
+func GetGsgmHistoryByPath(path string) (*gsgm_setting.GsgmHistory, error) {
+	historyPath := filepath.Join(path, ".gsgm", config.GsgmHistoryName)
+	jsonStr, err := fileutil.ReadFileToString(historyPath)
+	if err != nil {
+		return nil, err
+	}
+
+	history := &gsgm_setting.GsgmHistory{}
+	if err = json.Unmarshal([]byte(jsonStr), history); err != nil {
+		return nil, err
+	}
+
+	return history, nil
+}
