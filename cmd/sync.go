@@ -22,7 +22,7 @@ var syncCmd = &cobra.Command{
 
 var (
 	syncIsLibrary bool
-	syncForce     bool // TODO
+	syncForce     bool
 )
 
 func init() {

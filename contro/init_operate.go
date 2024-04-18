@@ -105,7 +105,9 @@ func InitByOne(path string) {
 	settingPath := filepath.Join(path, config.GsgmDirName, config.GsgmSettingName)
 
 	// write
-	os.MkdirAll(filepath.Join(path, config.GsgmDirName), os.ModePerm)
+	if err := os.MkdirAll(filepath.Join(path, config.GsgmDirName), os.ModePerm); err != nil {
+		logger.Erro(err)
+	}
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {

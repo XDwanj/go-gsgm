@@ -41,7 +41,9 @@ func CleanLutrisRunScript() error {
 			continue
 		}
 		logger.Info("rm runScript ", path)
-		fileutil.RemoveFile(path)
+		if err := fileutil.RemoveFile(path); err != nil {
+			logger.Erro(err)
+		}
 	}
 	return nil
 }

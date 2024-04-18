@@ -121,14 +121,13 @@ func getHistoryMap() map[int64]*gsgm_setting.GsgmHistory {
 		for _, game := range games {
 
 			var (
-				gsgmId         int64 = 0
 				lastPlayedTime int64 = 0
 				playedDuration int64 = 0
 			)
 			if !game.Slug.Valid {
 				panic("slug 不可能为空")
 			}
-			gsgmId, err := strconv.ParseInt(game.Slug.String[5:], 10, 64)
+			gsgmId, err := strconv.ParseInt(game.Slug.String[len(config.SlugPrefix):], 10, 64)
 			if err != nil {
 				panic(err)
 			}

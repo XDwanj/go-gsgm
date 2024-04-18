@@ -13,7 +13,7 @@ func UpsertLutrisDb(game *lutris_dao.LutrisGame, category *lutris_dao.LutrisCate
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() { _ = tx.Rollback() }()
 
 	var (
 		gameId     int64
@@ -78,7 +78,7 @@ func InstallLutrisDb(game *lutris_dao.LutrisGame, category *lutris_dao.LutrisCat
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() { _ = tx.Rollback() }()
 
 	var (
 		gameId     int64
@@ -86,12 +86,21 @@ func InstallLutrisDb(game *lutris_dao.LutrisGame, category *lutris_dao.LutrisCat
 	)
 
 	// clean
-	tx.Exec(`--sql
+	_, err = tx.Exec(`--sql
 	delete from games_categories where game_id in (select id from games where slug = ?)`, game.Slug)
-	tx.Exec(`--sql
+	if err != nil {
+		logger.Warn(err)
+	}
+	_, err = tx.Exec(`--sql
 	delete from categories where name = ?`, category.Name)
-	tx.Exec(`--sql
+	if err != nil {
+		logger.Warn(err)
+	}
+	_, err = tx.Exec(`--sql
 	delete from games where slug = ?`, game.Slug)
+	if err != nil {
+		logger.Warn(err)
+	}
 
 	// game
 	res, err := tx.NamedExec(`--sql
@@ -133,7 +142,7 @@ func CleanLutrisDb() error {
 		logger.Erro(err)
 		return err
 	}
-	defer tx.Rollback()
+	defer func() { _ = tx.Rollback() }()
 
 	// rel
 	if _, err := tx.Exec(`--sql

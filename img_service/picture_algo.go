@@ -8,6 +8,7 @@ import (
 	"math/big"
 	"os"
 
+	"github.com/XDwanj/go-gsgm/logger"
 	"golang.org/x/image/draw"
 )
 
@@ -15,12 +16,14 @@ import (
 func ZoomLutrisPicture(srcPath, destPath string, newWidth, newHeight int) error {
 	srcFile, err := os.Open(srcPath)
 	if err != nil {
+		logger.Erro(err)
 		return err
 	}
 	defer func() { _ = srcFile.Close() }()
 
 	drawBoard, err := preZoom(srcPath, newWidth, newHeight)
 	if err != nil {
+		logger.Erro(err)
 		return err
 	}
 	destImg := image.NewRGBA(image.Rect(0, 0, newWidth, newHeight))
@@ -36,15 +39,18 @@ func ZoomLutrisPicture(srcPath, destPath string, newWidth, newHeight int) error 
 
 	destFile, err := os.OpenFile(destPath, os.O_CREATE|os.O_RDWR, 0755)
 	if err != nil {
+		logger.Erro(err)
 		return err
 	}
 	defer func() { _ = destFile.Close() }()
 
 	writer := bufio.NewWriter(destFile)
 	if err = png.Encode(writer, destImg); err != nil {
+		logger.Erro(err)
 		return err
 	}
 	if err = writer.Flush(); err != nil {
+		logger.Erro(err)
 		return err
 	}
 
@@ -54,12 +60,14 @@ func ZoomLutrisPicture(srcPath, destPath string, newWidth, newHeight int) error 
 func preZoom(srcPath string, newWidth, newHeight int) (*image.RGBA, error) {
 	srcFile, err := os.Open(srcPath)
 	if err != nil {
+		logger.Erro(err)
 		return nil, err
 	}
 	defer func() { _ = srcFile.Close() }()
 
 	srcImg, _, err := image.Decode(srcFile)
 	if err != nil {
+		logger.Erro(err)
 		return nil, err
 	}
 
