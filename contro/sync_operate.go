@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"sync"
 
 	"github.com/XDwanj/go-gsgm/config"
@@ -17,7 +18,7 @@ import (
 	"github.com/duke-git/lancet/v2/strutil"
 )
 
-func SyncByLibraries(libPaths []string) {
+func SyncByLibraries(libPaths []string, force bool) {
 	packs := make([]gsgm_dto.GamePack, 0)
 	for _, libPath := range libPaths {
 		packs = slices.Concat(packs, gsgm_service.DeepGamePack(libPath))
@@ -31,7 +32,7 @@ func SyncByLibraries(libPaths []string) {
 			path := path
 			go func() {
 				defer wg.Done()
-				SyncByOne(path)
+				SyncByOne(path, force)
 			}()
 		}
 		wg.Wait()
@@ -39,7 +40,7 @@ func SyncByLibraries(libPaths []string) {
 
 }
 
-func SyncBySingles(paths []string) {
+func SyncBySingles(paths []string, force bool) {
 
 	var wg sync.WaitGroup
 	wg.Add(len(paths))
@@ -47,51 +48,90 @@ func SyncBySingles(paths []string) {
 		path := path
 		go func() {
 			defer wg.Done()
-			SyncByOne(path)
+			SyncByOne(path, force)
 		}()
 	}
 	wg.Wait()
 }
 
-func SyncByOne(path string) {
-	historyDic := getGameMap()
+func SyncByOne(path string, force bool) {
+	historyMap := getHistoryMap()
 	name := filepath.Base(path)
-	historyByDb := historyDic[name]
+	info, err := gsgm_service.GetGsgmInfoByPath(path)
+	if err != nil {
+		logger.Erro(err)
+		return
+	}
+	// db
+	historyByDb := historyMap[info.Id]
 	if historyByDb == nil {
 		return
 	}
 
-	json, err := formatter.Pretty(historyByDb)
-	if err != nil {
-		logger.Erro(fmt.Sprintf("sync [%s] error:", name), err)
+	// forceFunc
+	forceWrite := func() {
+		json, err := formatter.Pretty(historyByDb)
+		if err != nil {
+			logger.Erro(err)
+		}
+		historyPath := filepath.Join(path, config.GsgmDirName, config.GsgmHistoryName)
+		if err := fileutil.WriteStringToFile(historyPath, json, false); err != nil {
+			logger.Erro(err)
+		}
+		fmt.Printf("sync [%v] success content: %v\n", name, strutil.RemoveWhiteSpace(json, false))
 	}
 
-	historyPath := filepath.Join(path, config.GsgmDirName, config.GsgmHistoryName)
-	if err := fileutil.WriteStringToFile(historyPath, json, false); err != nil {
-		logger.Erro(fmt.Sprintf("sync [%s] error:", name), err)
+	// force
+	if force {
+		forceWrite()
+		return
 	}
-	fmt.Printf("sync [%v] success content: %v\n", name, strutil.RemoveWhiteSpace(json, false))
+
+	historyByDisk, err := gsgm_service.GetGsgmHistoryByPath(path)
+	if err != nil {
+		forceWrite()
+		return
+	}
+
+	// equals yes
+	if historyByDb.LastPlayedTime == historyByDisk.LastPlayedTime &&
+		historyByDb.PlayedDuration == historyByDisk.LastPlayedTime {
+		return
+	}
+
+	// final
+	forceWrite()
 }
 
-var _action sync.Once
-var _historyMap map[string]*gsgm_setting.GsgmHistory
+var (
+	_dbAction   sync.Once
+	_historyMap map[int64]*gsgm_setting.GsgmHistory
+)
 
-func getGameMap() map[string]*gsgm_setting.GsgmHistory {
-	_action.Do(func() {
+func getHistoryMap() map[int64]*gsgm_setting.GsgmHistory {
+	_dbAction.Do(func() {
 		games, err := lutris_service.ListNameAndLastplayedAndPlaytime()
 		if err != nil {
 			panic(err)
 		}
-		_historyMap = make(map[string]*gsgm_setting.GsgmHistory, len(games))
+		_historyMap = make(map[int64]*gsgm_setting.GsgmHistory, len(games))
 
 		var wg sync.WaitGroup
 		wg.Add(len(games))
 		for _, game := range games {
 
 			var (
+				gsgmId         int64 = 0
 				lastPlayedTime int64 = 0
 				playedDuration int64 = 0
 			)
+			if !game.Slug.Valid {
+				panic("slug 不可能为空")
+			}
+			gsgmId, err := strconv.ParseInt(game.Slug.String[5:], 10, 64)
+			if err != nil {
+				panic(err)
+			}
 			if game.Lastplayed.Valid {
 				lastPlayedTime = game.Lastplayed.Int64
 				playedDuration = int64(game.Playtime.Float64 * 60)
@@ -102,7 +142,7 @@ func getGameMap() map[string]*gsgm_setting.GsgmHistory {
 				PlayedDuration: playedDuration,
 			}
 
-			_historyMap[game.Name.String] = history
+			_historyMap[gsgmId] = history
 		}
 	})
 	return _historyMap

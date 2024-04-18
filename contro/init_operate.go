@@ -2,6 +2,7 @@ package contro
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -12,6 +13,7 @@ import (
 	"github.com/XDwanj/go-gsgm/gsgm_dto"
 	"github.com/XDwanj/go-gsgm/gsgm_service"
 	"github.com/XDwanj/go-gsgm/gsgm_setting"
+	"github.com/XDwanj/go-gsgm/logger"
 	"github.com/XDwanj/go-gsgm/util"
 	"github.com/duke-git/lancet/v2/fileutil"
 	"github.com/duke-git/lancet/v2/formatter"
@@ -103,17 +105,22 @@ func InitByOne(path string) {
 	settingPath := filepath.Join(path, config.GsgmDirName, config.GsgmSettingName)
 
 	// write
-	var waitGroup sync.WaitGroup
-	waitGroup.Add(2)
+	os.MkdirAll(filepath.Join(path, config.GsgmDirName), os.ModePerm)
+	var wg sync.WaitGroup
+	wg.Add(2)
 	go func() {
-		defer waitGroup.Done()
-		fileutil.WriteStringToFile(infoPath, infoJson, false)
+		defer wg.Done()
+		if err := fileutil.WriteStringToFile(infoPath, infoJson, false); err != nil {
+			logger.Erro(err)
+		}
 	}()
 	go func() {
-		defer waitGroup.Done()
-		fileutil.WriteStringToFile(settingPath, settingJson, false)
+		defer wg.Done()
+		if err := fileutil.WriteStringToFile(settingPath, settingJson, false); err != nil {
+			logger.Erro(err)
+		}
 	}()
-	waitGroup.Wait()
+	wg.Wait()
 
 	fmt.Println("该游戏的初始化已结束，请别忘了在 {game}/.gsgm/ 路径下放一个 cover.[jpg,jpeg,png] 文件")
 }

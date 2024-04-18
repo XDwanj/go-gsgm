@@ -13,18 +13,20 @@ var syncCmd = &cobra.Command{
 	PreRun: InitLog,
 	Run: func(cmd *cobra.Command, args []string) {
 		if syncIsLibrary {
-			contro.SyncByLibraries(args)
+			contro.SyncByLibraries(args, syncForce)
 			return
 		}
-		contro.SyncBySingles(args)
+		contro.SyncBySingles(args, syncForce)
 	},
 }
 
 var (
 	syncIsLibrary bool
+	syncForce     bool // TODO
 )
 
 func init() {
 	defer rootCmd.AddCommand(syncCmd)
 	syncCmd.Flags().BoolVarP(&syncIsLibrary, "lib", "l", false, "是否是 Gsgm 游戏库")
+	syncCmd.Flags().BoolVarP(&syncForce, "force", "f", false, "是否覆盖同步")
 }

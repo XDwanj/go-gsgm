@@ -156,6 +156,7 @@ func ListNameAndLastplayedAndPlaytime() ([]*lutris_dao.LutrisGame, error) {
 	games := make([]*lutris_dao.LutrisGame, 0)
 	err := db.Select(&games, `--sql
 	SELECT name,
+	slug,
     playtime,
     lastplayed
 	from games
