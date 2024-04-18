@@ -24,6 +24,7 @@ func UpsertLutrisDb(game *lutris_dao.LutrisGame, category *lutris_dao.LutrisCate
 	err = tx.Get(&gameId, `--sql
 	select id from games where slug = ?`, game.Slug)
 	if err != nil {
+		// insert
 		res, err := tx.NamedExec(`--sql
 		insert into games (
 			name, slug, platform, lastplayed, playtime, runner, directory, installed, installed_at, updated, configpath, has_custom_banner, has_custom_icon, has_custom_coverart_big, hidden
@@ -35,6 +36,15 @@ func UpsertLutrisDb(game *lutris_dao.LutrisGame, category *lutris_dao.LutrisCate
 			return err
 		}
 		gameId, _ = res.LastInsertId()
+	} else {
+		// history
+		if game.Lastplayed.Valid || game.Playtime.Valid {
+			if _, err := tx.Exec(`--sql
+			update games set lastplayed = ?, playtime = ? where id = ?`, game.Lastplayed, game.Playtime, gameId); err != nil {
+				logger.Erro(err)
+				return err
+			}
+		}
 	}
 
 	// categories

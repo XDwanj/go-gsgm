@@ -37,7 +37,7 @@ func GsgmToLutrisLutrisGameDao(path string, info *gsgm_setting.GsgmInfo, setting
 	)
 	if history != nil {
 		lastplayed = sql.NullInt64{Int64: history.LastPlayedTime, Valid: true}
-		playtime = sql.NullFloat64{Float64: time.Duration(history.PlayedDuration).Hours(), Valid: true}
+		playtime = sql.NullFloat64{Float64: (time.Duration(history.PlayedDuration) * time.Minute).Hours(), Valid: true}
 	}
 
 	lutrisGame := &lutris_dao.LutrisGame{
