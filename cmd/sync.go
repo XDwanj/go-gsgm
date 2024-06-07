@@ -12,6 +12,7 @@ var syncCmd = &cobra.Command{
 	Args:   cobra.MinimumNArgs(1),
 	PreRun: InitLog,
 	Run: func(cmd *cobra.Command, args []string) {
+		ToAbsolutePath(args)
 		if syncIsLibrary {
 			contro.SyncByLibraries(args, syncForce)
 			return

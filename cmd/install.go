@@ -11,6 +11,7 @@ var installCmd = &cobra.Command{
 	Args:   cobra.MinimumNArgs(1),
 	PreRun: InitLog,
 	Run: func(cmd *cobra.Command, args []string) {
+		ToAbsolutePath(args)
 		if installIsLibrary {
 			contro.InstallByLibraries(args, installForce, installSafeMode)
 			return

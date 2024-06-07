@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/XDwanj/go-gsgm/logger"
 	"github.com/spf13/cobra"
@@ -18,6 +19,16 @@ func InitLog(cmd *cobra.Command, args []string) {
 		logger.Level = logger.Debug
 	} else {
 		logger.Level = logger.Error
+	}
+}
+
+func ToAbsolutePath(paths []string) {
+	for i := range paths {
+		path, err := filepath.Abs(paths[i])
+		if err != nil {
+			panic("无法转换路径为绝对路径!!!")
+		}
+		paths[i] = path
 	}
 }
 

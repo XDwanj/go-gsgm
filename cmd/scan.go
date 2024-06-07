@@ -11,6 +11,7 @@ var scanCmd = &cobra.Command{
 	Args:   cobra.MinimumNArgs(1),
 	PreRun: InitLog,
 	Run: func(cmd *cobra.Command, args []string) {
+		ToAbsolutePath(args)
 		contro.ScanByLibraries(args)
 	},
 }

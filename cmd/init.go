@@ -12,6 +12,7 @@ var initCmd = &cobra.Command{
 	Args:   cobra.MinimumNArgs(1),
 	PreRun: InitLog,
 	Run: func(cmd *cobra.Command, args []string) {
+		ToAbsolutePath(args)
 		if initIsLibrary {
 			contro.InitByLibraries(args)
 			return

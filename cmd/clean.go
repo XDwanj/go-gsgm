@@ -12,6 +12,7 @@ var cleanCmd = &cobra.Command{
 	Args:   cobra.NoArgs,
 	PreRun: InitLog,
 	Run: func(cmd *cobra.Command, args []string) {
+		ToAbsolutePath(args)
 		contro.CleanAction()
 	},
 }
