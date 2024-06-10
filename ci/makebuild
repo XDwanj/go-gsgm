@@ -4,7 +4,7 @@
 go build ../
 cp ../LICENSE ./
 
-# ArchLinux
+# pacman
 cp go-gsgm pacman/
 cp LICENSE pacman/
 cd pacman
