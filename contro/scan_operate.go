@@ -33,7 +33,7 @@ func ScanByLibraries(libPaths []string) {
 			builder.WriteString(" ")
 			builder.WriteString(text.FgBlue.Sprint(strconv.FormatInt(info.Id, 10)))
 			builder.WriteString(" ")
-			builder.WriteString("alone=" + strconv.FormatBool(setting.WinePrefixAlone))
+			builder.WriteString("alone=" + strconv.FormatBool(setting.PrefixAlone))
 			builder.WriteString("\n")
 			builder.WriteString("\t")
 			builder.WriteString(path)

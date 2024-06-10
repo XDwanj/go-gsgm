@@ -2,3 +2,8 @@
 *.iml
 .vsocde/
 go-gsgm
+ci/go-gsgm
+ci/src/
+ci/pkg/
+ci/*.zst
+ci/LICENSE

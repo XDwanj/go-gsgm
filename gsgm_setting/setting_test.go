@@ -9,11 +9,11 @@ import (
 
 func TestPrintSetting(t *testing.T) {
 	setting := &GsgmSetting{
-		ExecuteLocation: "run.exe",
-		WinePrefixAlone: false,
-		LocaleCharSet:   ChinaUTF8,
-		Platform:        Windows,
-		Runner:          Wine,
+		Execute:       "run.exe",
+		PrefixAlone:   false,
+		LocaleCharSet: ChinaUTF8,
+		Platform:      Windows,
+		Runner:        Wine,
 	}
 
 	json, err := formatter.Pretty(setting)

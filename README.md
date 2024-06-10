@@ -66,8 +66,8 @@ setting.json
 
 ```json5
 {
-    "executeLocation": "run.exe",// 游戏启动文件，路径相对于游戏根目录
-    "winePrefixAlone": false,// wineprefix 是否隔离
+    "execute": "run.exe",// 游戏启动文件，路径相对于游戏根目录
+    "prefixAlone": false,// wineprefix 是否隔离
     "localeCharSet": "zh_CN.UTF-8",// 字符集编码，默认 zh_CN.UTF-8
     "platform": "Windows",// 游戏平台，默认 Windows，可选值：[Windows | Linux]
     "runner": "wine"

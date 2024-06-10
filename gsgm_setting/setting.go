@@ -3,14 +3,14 @@ package gsgm_setting
 import "errors"
 
 type GsgmSetting struct {
-	ExecuteLocation string        `json:"executeLocation,omitempty"`
-	WinePrefixAlone bool          `json:"winePrefixAlone"` // json 默认打印
-	LocaleCharSet   LocaleCharSet `json:"localeCharSet,omitempty"`
-	Platform        Platform      `json:"platform,omitempty"`
-	Runner          Runner        `json:"runner,omitempty"`
-	PreCommand      string        `json:"preCommand,omitempty"`
-	ArgsCommand     string        `json:"argsCommand,omitempty"`
-	EndCommand      string        `json:"endCommand,omitempty"`
+	Execute       string        `json:"execute,omitempty"`
+	PrefixAlone   bool          `json:"PrefixAlone"` // json 默认打印
+	LocaleCharSet LocaleCharSet `json:"localeCharSet,omitempty"`
+	Platform      Platform      `json:"platform,omitempty"`
+	Runner        Runner        `json:"runner,omitempty"`
+	PreCommand    string        `json:"preCommand,omitempty"`
+	ArgsCommand   string        `json:"argsCommand,omitempty"`
+	EndCommand    string        `json:"endCommand,omitempty"`
 
 	// deprecated: 不再需要单独设置 prefix，统一放在 ~/.local/share/gsgm/prefix/
 	WinePrefix string `json:"winePrefix,omitempty"`

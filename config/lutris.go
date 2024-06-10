@@ -54,6 +54,17 @@ type imgStand struct {
 	Width, Height int
 }
 
+// Lutris 默认配置了一些环境变量，用于执行脚本
+var LutrisEnvName = lutrisEnv{
+	GameName:      "GAME_NAME",
+	GameDirectory: "GAME_DIRECTORY",
+}
+
+type lutrisEnv struct {
+	GameName      string
+	GameDirectory string
+}
+
 func init() {
 	logger.Info("pgaDb path ", PgaDbPath)
 }

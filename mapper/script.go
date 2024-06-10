@@ -11,15 +11,17 @@ import (
 
 func GsgmToLutrisRunScript(path string, info *gsgm_setting.GsgmInfo, setting *gsgm_setting.GsgmSetting) *lutris_script.LutrisRunScript {
 	slug := config.SlugPrefix + strconv.FormatInt(info.Id, 10)
-	exe := filepath.Join(path, setting.ExecuteLocation)
+	exe := filepath.Join(path, setting.Execute)
+
 	var locale string
 	if string(setting.LocaleCharSet) == "" {
 		locale = string(gsgm_setting.ChinaUTF8)
 	} else {
 		locale = string(setting.LocaleCharSet)
 	}
+
 	var prefix string
-	if setting.WinePrefixAlone {
+	if setting.PrefixAlone {
 		prefix = filepath.Join(config.GsgmPrefixPath, strconv.FormatInt(info.Id, 10))
 	} else {
 		prefix = config.GsgmDefaultPrefixPath

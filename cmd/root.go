@@ -11,7 +11,8 @@ import (
 var rootCmd = &cobra.Command{
 	Use:     "gsgm",
 	Short:   "Gsgm Linux 游戏管理工具",
-	Version: "v0.1.0",
+	PreRun:  InitLog,
+	Version: "v0.1.1",
 }
 
 func InitLog(cmd *cobra.Command, args []string) {
@@ -28,6 +29,7 @@ func ToAbsolutePath(paths []string) {
 		if err != nil {
 			panic("无法转换路径为绝对路径!!!")
 		}
+		logger.Info("args[", i, "] => ", path)
 		paths[i] = path
 	}
 }

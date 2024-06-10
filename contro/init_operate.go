@@ -74,7 +74,7 @@ func InitByOne(path string) {
 	fmt.Print(">>")
 	fmt.Scanln(&idx)
 
-	exe := files[idx][len(path)+1:]
+	execute := files[idx][len(path)+1:]
 
 	prefixFlag := 0
 	if platform == gsgm_setting.Windows {
@@ -89,11 +89,11 @@ func InitByOne(path string) {
 
 	// setting
 	setting := &gsgm_setting.GsgmSetting{
-		ExecuteLocation: exe,
-		WinePrefixAlone: prefixAlone,
-		LocaleCharSet:   gsgm_setting.ChinaUTF8,
-		Platform:        platform,
-		Runner:          runner,
+		Execute:       execute,
+		PrefixAlone:   prefixAlone,
+		LocaleCharSet: gsgm_setting.ChinaUTF8,
+		Platform:      platform,
+		Runner:        runner,
 	}
 
 	infoJson, _ := formatter.Pretty(info)
