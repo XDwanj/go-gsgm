@@ -13,19 +13,18 @@ depends=(
 	'lutris>0.5.14'
 )
 conflicts=(
-	'gsgm'
-	'go-gsgm'
+	"$pkgname"
+	"$_pkgname"
 )
 provides=(
-	'gsgm'
-	'go-gsgm'
+	"$pkgname"
+	"$_pkgname"
 )
 source=(
-	# "https://github.com/XDwanj/${pkgname}/releases/download/v${pkgver}/${pkgname}"
 	"${pkgname}"
-	"https://raw.githubusercontent.com/XDwanj/${pkgname}/master/LICENSE"
+	"LICENSE"
 )
-sha256sums=('eb0f2f85ad974997cd9a3736619e5a3f21a2908f7f8394eca93f4acf0ca09d35'
+sha256sums=('4363663065aec1e6cacb54553f02de2933357f23a07cd14ac380622094610875'
             '4002f795f7119311fc2413ef76e823dc38b3a59864c472c323c65089e1fd7861')
 
 prepare() {

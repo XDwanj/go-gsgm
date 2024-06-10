@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# origin
+go build ../
+cp ../LICENSE ./
+
+# ArchLinux
+cp go-gsgm pacman/
+cp LICENSE pacman/
+cd pacman
+
+updpkgsums
+makepkg -sfc pacman \
+&& cp *.tar.zst ../
+
+cd ..
