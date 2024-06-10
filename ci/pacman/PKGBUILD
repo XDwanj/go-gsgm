@@ -24,7 +24,7 @@ source=(
 	"${pkgname}"
 	"LICENSE"
 )
-sha256sums=('4363663065aec1e6cacb54553f02de2933357f23a07cd14ac380622094610875'
+sha256sums=('c3da2eaa4880eaed8d888b757ebd9abb7d4f4ca8f52b7138b9e84910f0d9f77e'
             '4002f795f7119311fc2413ef76e823dc38b3a59864c472c323c65089e1fd7861')
 
 prepare() {

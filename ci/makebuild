@@ -11,6 +11,6 @@ cd pacman
 
 updpkgsums
 makepkg -sfc pacman \
-&& cp *.tar.zst ../
+&& mv *.tar.zst ../
 
 cd ..
