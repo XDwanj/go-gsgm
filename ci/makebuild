@@ -7,10 +7,9 @@ cp ../LICENSE ./
 # pacman
 cp go-gsgm pacman/
 cp LICENSE pacman/
-cd pacman
 
+cd pacman
 updpkgsums
 makepkg -sfc pacman \
 && mv *.tar.zst ../
-
 cd ..

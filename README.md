@@ -27,7 +27,6 @@ Gsgm 的特点和功能：
 │   │     ├── setting.json  -------- 游戏的运行设置
 │   │     ├── history.json  -------- 游玩历史
 │   │     ├── cover.xxx     -------- 游戏封面，可以是 [png | jpg | jpeg]
-│   │     └── winePrefix    -------- 默认的 wineprefix 位置
 │   └── bin
 │        └── 游戏A.exe       -------- 游戏可执行文件，可以识别游戏根目录和二级目录的可执行文件
 ├── 游戏B
@@ -76,18 +75,19 @@ setting.json
 
 ## 使用方式
 
-```shell
-# 通过设置别名的方式使用
-alias gsgm='/path/to/go-gsgm'
+### ArchLinux
+
+```sh
+yay -U go-gsgm-{具体版本}.pkg.tar.zst 
 ```
 
-```shell
-# 读取这个配置，支持 bash 和 zsh 的自动补全
-source completion.sh
+### 原生安装
 
-# completion.sh 可以自己生成
-gsgm completion [bash,zsh,fish] > completion.sh
-```
+> 需要有一定 Linux 基础
+
+1. 下载 go-gsgm 二进制文件
+2. 生成对应的代码补全脚本 `go-gsgm completion (bash|zsh|fish) > completion.sh`
+3. 生成 lutris 的 post exit 脚本 `gsgm gen lupes > gsgm-lupes`
 
 ## 文档
 
@@ -103,14 +103,17 @@ Available Commands:
   check       检查当前游戏或者游戏库目录是否合法
   clean       清理 Lutris 中 Gsgm 游戏
   completion  Generate the autocompletion script for the specified shell
+  gen         生成辅助性的脚本命令
   help        Help about any command
   init        初始化单个游戏或者一整个 Gsgm 库
   install     安装游戏
   scan        扫描游戏当前库
+  sync        同步游戏时长
 
 Flags:
   -h, --help      help for gsgm
   -v, --verbose   verbose output
+      --version   version for gsgm
 
 Use "gsgm [command] --help" for more information about a command.
 ```
