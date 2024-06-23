@@ -12,7 +12,7 @@ var rootCmd = &cobra.Command{
 	Use:     "gsgm",
 	Short:   "Gsgm Linux 游戏管理工具",
 	PreRun:  InitLog,
-	Version: "v0.1.1",
+	Version: "v0.1.2",
 }
 
 func InitLog(cmd *cobra.Command, args []string) {

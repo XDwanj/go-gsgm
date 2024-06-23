@@ -1,6 +1,7 @@
 package config
 
 import (
+	"os"
 	"path/filepath"
 
 	"github.com/XDwanj/go-gsgm/logger"
@@ -67,4 +68,19 @@ type lutrisEnv struct {
 
 func init() {
 	logger.Info("pgaDb path ", PgaDbPath)
+	mkDirsPaths := []string{
+		filepath.Base(PgaDbPath),
+		RunScriptPath,
+		CoverartPath,
+		BannerPath,
+		IconPath,
+	}
+
+	for _, path := range mkDirsPaths {
+		err := os.MkdirAll(path, os.ModePerm)
+		if err != nil {
+			logger.Erro(err)
+			panic(err)
+		}
+	}
 }
