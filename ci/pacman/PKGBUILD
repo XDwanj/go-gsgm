@@ -1,56 +1,56 @@
 # Maintainer: XDwanj <xdwanj@qq.com>
 pkgname="go-gsgm"
 _pkgname="gsgm"
-pkgver=0.1.1
+pkgver=0.1.2
 pkgrel=1
 pkgdesc="Gnu Single Game Manager,Linux端的游戏库管理工具,主要与 Lutris 一起使用,相辅相成,Go 版本。"
 arch=(
-	'x86_64' 
+    'x86_64'
 )
 url="https://github.com/Jguer/yay"
 license=('GPL-3.0')
 depends=(
-	'lutris>0.5.14'
+    'lutris>0.5.14'
 )
 conflicts=(
-	"$pkgname"
-	"$_pkgname"
+    "$pkgname"
+    "$_pkgname"
 )
 provides=(
-	"$pkgname"
-	"$_pkgname"
+    "$pkgname"
+    "$_pkgname"
 )
 source=(
-	"${pkgname}"
-	"LICENSE"
+    "${pkgname}"
+    "LICENSE"
 )
 sha256sums=(
-	'SKIP'
+    'SKIP'
     'SKIP'
 )
 
 prepare() {
-	cd "$srcdir"
-
-	chmod +x "${pkgname}"
-
-	./${pkgname} gen lupes > "$srcdir/${_pkgname}-lupes"
-	chmod +x "$srcdir/${_pkgname}-lupes"
-
-	./${pkgname} completion bash > "$srcdir/${_pkgname}.bash"
-	./${pkgname} completion fish > "$srcdir/${_pkgname}.fish"
-	./${pkgname} completion zsh > "$srcdir/${_pkgname}.zsh"
+    cd "$srcdir"
+    
+    chmod +x "${pkgname}"
+    
+    ./${pkgname} gen lupes > "$srcdir/${_pkgname}-lupes"
+    chmod +x "$srcdir/${_pkgname}-lupes"
+    
+    ./${pkgname} completion bash > "$srcdir/${_pkgname}.bash"
+    ./${pkgname} completion fish > "$srcdir/${_pkgname}.fish"
+    ./${pkgname} completion zsh > "$srcdir/${_pkgname}.zsh"
 }
 
 package() {
-	cd "$srcdir"
-
-	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-
-	install -Dm644 "$srcdir/${_pkgname}.bash" "$pkgdir/usr/share/bash-completion/completions/${_pkgname}"
-	install -Dm644 "$srcdir/${_pkgname}.zsh"  "$pkgdir/usr/share/zsh/site-functions/_${_pkgname}"
-	install -Dm644 "$srcdir/${_pkgname}.fish" "$pkgdir/usr/share/fish/vendor_completions.d/${_pkgname}.fish"
-
-	install -Dm755 "$srcdir/${_pkgname}-lupes" "$pkgdir/usr/bin/${_pkgname}-lupes"
-	install -Dm755 "$srcdir/${pkgname}" "$pkgdir/usr/bin/${_pkgname}"
+    cd "$srcdir"
+    
+    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+    
+    install -Dm644 "$srcdir/${_pkgname}.bash" "$pkgdir/usr/share/bash-completion/completions/${_pkgname}"
+    install -Dm644 "$srcdir/${_pkgname}.zsh"  "$pkgdir/usr/share/zsh/site-functions/_${_pkgname}"
+    install -Dm644 "$srcdir/${_pkgname}.fish" "$pkgdir/usr/share/fish/vendor_completions.d/${_pkgname}.fish"
+    
+    install -Dm755 "$srcdir/${_pkgname}-lupes" "$pkgdir/usr/bin/${_pkgname}-lupes"
+    install -Dm755 "$srcdir/${pkgname}" "$pkgdir/usr/bin/${_pkgname}"
 }
