@@ -27,9 +27,9 @@ func UpsertLutrisDb(game *lutris_dao.LutrisGame, category *lutris_dao.LutrisCate
 		// insert
 		res, err := tx.NamedExec(`--sql
 		insert into games (
-			name, slug, platform, lastplayed, playtime, runner, directory, installed, installed_at, updated, configpath, has_custom_banner, has_custom_icon, has_custom_coverart_big, hidden
+			name, slug, platform, lastplayed, playtime, runner, directory, installed, installed_at, updated, configpath, has_custom_banner, has_custom_icon, has_custom_coverart_big
 		) values (
-			:name, :slug, :platform, :lastplayed, :playtime, :runner, :directory, :installed, :installed_at, :updated, :configpath, :has_custom_banner, :has_custom_icon, :has_custom_coverart_big, :hidden
+			:name, :slug, :platform, :lastplayed, :playtime, :runner, :directory, :installed, :installed_at, :updated, :configpath, :has_custom_banner, :has_custom_icon, :has_custom_coverart_big
 		)`, game)
 		if err != nil {
 			logger.Erro(err)
@@ -105,9 +105,9 @@ func InstallLutrisDb(game *lutris_dao.LutrisGame, category *lutris_dao.LutrisCat
 	// game
 	res, err := tx.NamedExec(`--sql
 	insert into games (
-		name, slug, platform, lastplayed, playtime, runner, directory, installed, installed_at, updated, configpath, has_custom_banner, has_custom_icon, has_custom_coverart_big, hidden
+		name, slug, platform, lastplayed, playtime, runner, directory, installed, installed_at, updated, configpath, has_custom_banner, has_custom_icon, has_custom_coverart_big
 	) values (
-		:name, :slug, :platform, :lastplayed, :playtime,:runner, :directory, :installed, :installed_at, :updated, :configpath, :has_custom_banner, :has_custom_icon, :has_custom_coverart_big, :hidden
+		:name, :slug, :platform, :lastplayed, :playtime,:runner, :directory, :installed, :installed_at, :updated, :configpath, :has_custom_banner, :has_custom_icon, :has_custom_coverart_big
 	)`, game)
 	if err != nil {
 		logger.Erro(err)
