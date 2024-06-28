@@ -69,7 +69,7 @@ type lutrisEnv struct {
 func init() {
 	logger.Info("pgaDb path ", PgaDbPath)
 	mkDirsPaths := []string{
-		filepath.Base(PgaDbPath),
+		lutrisLocalPath,
 		RunScriptPath,
 		CoverartPath,
 		BannerPath,
