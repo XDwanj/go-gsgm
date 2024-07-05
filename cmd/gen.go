@@ -1,12 +1,10 @@
-/*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
 	"fmt"
 	"strings"
 
+	"github.com/XDwanj/go-gsgm/config"
 	"github.com/spf13/cobra"
 )
 
@@ -25,13 +23,12 @@ var genPostExitScript = &cobra.Command{
 	Short: "generate lutris post exit script",
 	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(
-			strings.Trim(`
-#!/bin/sh
-/usr/bin/gsgm sync -v "$GAME_DIRECTORY"
-				`,
-				"\n",
-			))
+		var sh strings.Builder
+		sh.WriteString("#!/bin/sh")
+		sh.WriteString("\n")
+		sh.WriteString("/usr/bin/gsgm " + syncCmd.Name() + " -v \"$" + config.LutrisEnvName.GameDirectory + "\"")
+		sh.WriteString("\n")
+		fmt.Println(sh.String())
 	},
 }
 

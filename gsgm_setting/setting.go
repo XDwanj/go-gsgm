@@ -4,7 +4,7 @@ import "errors"
 
 type GsgmSetting struct {
 	Execute       string        `json:"execute,omitempty"`
-	PrefixAlone   bool          `json:"PrefixAlone"` // json 默认打印
+	PrefixAlone   bool          `json:"prefixAlone"` // json 默认打印
 	LocaleCharSet LocaleCharSet `json:"localeCharSet,omitempty"`
 	Platform      Platform      `json:"platform,omitempty"`
 	Runner        Runner        `json:"runner,omitempty"`

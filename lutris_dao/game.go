@@ -28,7 +28,7 @@ CREATE TABLE games (
 	has_custom_icon INTEGER,
 	has_custom_coverart_big INTEGER,
 	playtime REAL,
-	hidden INTEGER,
+	// hidden INTEGER,
 	service TEXT,
 	service_id TEXT,
 	discord_id TEXT
@@ -56,8 +56,10 @@ type LutrisGame struct {
 	HasCustomIcon        sql.NullInt32   `json:"has_custom_icon"`         // 是否有 icon
 	HasCustomCoverartBig sql.NullInt32   `json:"has_custom_coverart_big"` // 是否有 cover
 	Playtime             sql.NullFloat64 `json:"playtime"`                // 游玩时间，小数，单位小时
-	Hidden               sql.NullInt32   `json:"hidden"`                  // 是否隐藏
 	Service              sql.NullString  `json:"service"`                 // 游戏服务提供商，如：Steam
 	ServiceId            sql.NullString  `json:"service_id"`              // 游戏服务提供商id
 	DiscordId            sql.NullString  `json:"discord_id"`              // dicord频道id
+
+	// deprecated: lutris 废弃
+	// Hidden sql.NullInt32 `json:"hidden"` // 是否隐藏
 }

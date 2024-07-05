@@ -55,7 +55,7 @@ func GsgmToLutrisLutrisGameDao(path string, info *gsgm_setting.GsgmInfo, setting
 		HasCustomBanner:      sql.NullInt32{Int32: 1, Valid: true},
 		HasCustomIcon:        sql.NullInt32{Int32: 1, Valid: true},
 		HasCustomCoverartBig: sql.NullInt32{Int32: 1, Valid: true},
-		Hidden:               sql.NullInt32{Int32: 0, Valid: true},
+		// Hidden:               sql.NullInt32{Int32: 0, Valid: true},
 	}
 
 	return lutrisGame
