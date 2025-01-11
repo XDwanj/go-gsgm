@@ -1,7 +1,7 @@
 # Maintainer: XDwanj <xdwanj@qq.com>
 pkgname="go-gsgm"
 _pkgname="gsgm"
-pkgver=0.1.1
+pkgver=0.1.3
 pkgrel=1
 pkgdesc="Gnu Single Game Manager,Linux端的游戏库管理工具,主要与 Lutris 一起使用,相辅相成,Go 版本。"
 arch=(

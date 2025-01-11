@@ -17,10 +17,13 @@ var (
 )
 
 var (
-	GsgmTmpPath           = filepath.Join(gsgmCachePath, "tmp")
-	GsgmDbPath            = filepath.Join(gsgmLocalPath, "gsgm.db")
-	GsgmPrefixPath        = filepath.Join(gsgmLocalPath, "prefix")
-	GsgmDefaultPrefixPath = filepath.Join(gsgmLocalPath, "prefix", "0")
+	GsgmTmpPath = filepath.Join(gsgmCachePath, "tmp")
+	GsgmDbPath  = filepath.Join(gsgmLocalPath, "gsgm.db")
+	// GsgmPrefixPath        = filepath.Join(gsgmLocalPath, "prefix")
+	// GsgmDefaultPrefixPath = filepath.Join(gsgmLocalPath, "prefix", "0")
+	// 方便与 umu-run，配合使用 umu-run <gsgm_id> 启动游戏
+	GsgmPrefixPath        = filepath.Join(home, "Games", "umu")
+	GsgmDefaultPrefixPath = filepath.Join(GsgmPrefixPath, "0")
 )
 
 const (
@@ -33,7 +36,20 @@ const (
 	DefaultGroupName = "$default"
 )
 
+var GsgmEnvs []string
+
 func init() {
+	GsgmEnvs = append(
+		GsgmEnvs,
+		gsgmLocalPath,
+		gsgmConfigPath,
+		gsgmCachePath,
+		GsgmTmpPath,
+		GsgmDbPath,
+		GsgmPrefixPath,
+		GsgmDefaultPrefixPath,
+	)
+
 	mkDirPaths := []string{
 		gsgmLocalPath,
 		gsgmConfigPath,

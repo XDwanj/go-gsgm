@@ -71,7 +71,6 @@ func UpsertLutrisDb(game *lutris_dao.LutrisGame, category *lutris_dao.LutrisCate
 	// tx.commit
 	return tx.Commit()
 }
-
 func InstallLutrisDb(game *lutris_dao.LutrisGame, category *lutris_dao.LutrisCategory) error {
 	// tx.begin
 	tx, err := dao.LuDb.Beginx()

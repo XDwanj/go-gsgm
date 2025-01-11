@@ -6,7 +6,9 @@ import (
 
 	"github.com/XDwanj/go-gsgm/config"
 	"github.com/XDwanj/go-gsgm/gsgm_setting"
+	"github.com/XDwanj/go-gsgm/logger"
 	"github.com/XDwanj/go-gsgm/lutris_script"
+	"github.com/duke-git/lancet/v2/formatter"
 )
 
 func GsgmToLutrisRunScript(path string, info *gsgm_setting.GsgmInfo, setting *gsgm_setting.GsgmSetting) *lutris_script.LutrisRunScript {
@@ -37,9 +39,17 @@ func GsgmToLutrisRunScript(path string, info *gsgm_setting.GsgmInfo, setting *gs
 		},
 		System: &lutris_script.SystemDetail{
 			Locale: locale,
+			Env: map[string]string{
+				"HOST_LC_ALL": locale,
+			},
 		},
 		Wine: nil,
 	}
+	runScriptJson, err := formatter.Pretty(runScript)
+	if err != nil {
+		panic(err)
+	}
+	logger.Info("run script: ", runScriptJson)
 
 	return runScript
 }

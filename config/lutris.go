@@ -65,6 +65,21 @@ type lutrisEnv struct {
 	GameDirectory string
 }
 
+var LutrisEnvs []string
+
 func init() {
+
+	LutrisEnvs = append(
+		LutrisEnvs,
+		lutrisConfigPath,
+		lutrisCachePath,
+		lutrisLocalPath,
+		PgaDbPath,
+		RunScriptPath,
+		CoverartPath,
+		BannerPath,
+		IconPath,
+	)
+
 	logger.Info("pgaDb path ", PgaDbPath)
 }

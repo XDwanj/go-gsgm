@@ -19,11 +19,11 @@ type GsgmSetting struct {
 type LocaleCharSet string
 
 const (
+	ChinaUTF8    LocaleCharSet = "zh_CN.UTF-8" // 推荐值
 	ChinaGBK     LocaleCharSet = "zh_CN.GBK"
 	ChinaGB18030 LocaleCharSet = "zh_CN.GB18030"
-	ChinaUTF8    LocaleCharSet = "zh_CN.UTF-8"
+	JapanUTF8    LocaleCharSet = "ja_JP.UTF-8" // 推荐值
 	JapanEucJp   LocaleCharSet = "ja_JP.EUC-JP"
-	JapanUTF8    LocaleCharSet = "ja_JP.UTF-8"
 )
 
 type Platform string

@@ -136,5 +136,5 @@ func InstallByOne(path string, force bool, packName string, safeMode bool) {
 		logger.Erro(err)
 	}
 
-	fmt.Println("completed => " + path)
+	fmt.Println("completed => " + "'" + path + "'")
 }
